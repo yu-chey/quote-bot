@@ -1,7 +1,9 @@
 import aiosqlite
 
+from src.config import db_path
+
 async def add_quote(quote_text) -> None:
-    async with aiosqlite.connect('../database/db.db') as connect:
+    async with aiosqlite.connect(database=db_path) as connect:
         cursor = await connect.cursor()
 
         await connect.execute("INSERT INTO quotes (quote_text) VALUES (?);",
@@ -9,7 +11,7 @@ async def add_quote(quote_text) -> None:
         await connect.commit()
 
 async def select_all() -> list[str]:
-    async with aiosqlite.connect('../database/db.db') as connect:
+    async with aiosqlite.connect(database=db_path) as connect:
         cursor = await connect.cursor()
 
         quotes = await cursor.execute("SELECT * FROM quotes")
@@ -18,7 +20,7 @@ async def select_all() -> list[str]:
 
 async def delete_quote(quote_id: int) -> bool:
     try:
-        async with aiosqlite.connect('../database/db.db') as connect:
+        async with aiosqlite.connect(database=db_path) as connect:
             cursor = await connect.execute(
                 "DELETE FROM quotes WHERE id = ?",
                 (quote_id,)
@@ -35,7 +37,7 @@ async def delete_quote(quote_id: int) -> bool:
         return False
 
 async def create_table_quotes() -> None:
-    async with aiosqlite.connect('../database/db.db') as connect:
+    async with aiosqlite.connect(database=db_path) as connect:
         await connect.execute('''
             CREATE TABLE IF NOT EXISTS "quotes" (
                 "id"	INTEGER NOT NULL UNIQUE,
